@@ -23,8 +23,7 @@ AEnemy::AEnemy()
 
 
 	enemyMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("EnemyMesh"));
-	enemyMesh->SetupAttachment(RootComponent);
-	enemyMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	enemyMesh->SetupAttachment(enemyCollision);
 
 
 	healthText = CreateDefaultSubobject<UText3DComponent>(TEXT("HealthText"));
@@ -62,14 +61,16 @@ void AEnemy::OnHealthUpdated(float newHP)
 	if (newHP <= 0)
 	{
 		isDead = true;
-
-		enemyMesh->SetSimulatePhysics(true);
-		enemyMesh->SetCollisionProfileName(TEXT("Ragdoll"));
+		if (enemyMesh)
+		{
+			enemyMesh->SetSimulatePhysics(true);
+			enemyMesh->SetCollisionProfileName(TEXT("Ragdoll"));
+		}
 		SetLifeSpan(3.0f);
 	}
 	else if (healthText)
 	{
-		FString healthString = FString::Printf(TEXT("Health: %d"), FMath::RoundToInt(newHP));
+		FString healthString = FString::Printf(TEXT("HP: %d"), FMath::RoundToInt(newHP));
 		healthText->SetText(FText::FromString(healthString));
 	}
 }

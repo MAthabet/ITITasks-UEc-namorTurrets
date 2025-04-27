@@ -30,8 +30,16 @@ public:
 	float maxShootDist = 1000.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
 	TSubclassOf<ATurret> turretClass;
-	UPROPERTY()
-	float currentTurrets = 0;
+	UPROPERTY(EditAnywhere, Category = "Turret")
+	USoundBase* turretBuildSound;
+	
+	UPROPERTY(BlueprintReadWrite, Category = "player")
+	float currentSpeed = 0.0f;
+	UPROPERTY(BlueprintReadWrite, Category = "player")
+	float isShooting = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
+	TSubclassOf<UAnimInstance> AnimBP;
 
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
@@ -73,8 +81,11 @@ private:
 	UFUNCTION()
 	void turretDie();
 
+
 	UPROPERTY()
 	APlayerController* PlayerController;
+	UPROPERTY()
+	float currentTurrets = 0;
 
 public:	
 	// Called every frame

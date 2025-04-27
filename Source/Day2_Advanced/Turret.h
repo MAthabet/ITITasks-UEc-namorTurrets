@@ -23,7 +23,7 @@ public:
 	ATurret();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
-	float damage = 100.0f;
+	float damage = 10.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
 	float shootCooldown = 0.5f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
@@ -44,7 +44,7 @@ public:
 
 private:
 	float lastShotTime = 0.0f;
-	void attackEnemy(AActor* enemy);
+	void attackEnemy();
 	UFUNCTION()
 	void OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 	UFUNCTION()

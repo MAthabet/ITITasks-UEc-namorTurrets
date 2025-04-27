@@ -11,6 +11,9 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "InputAction.h"
+#include "Sound/SoundBase.h" 
+#include "Kismet/GameplayStatics.h"
+#include "Animation/AnimInstance.h"
 #include "C:\Program Files\Epic Games\UE_5.4\Engine\Plugins\Experimental\Text3D\Source\Text3D\Public\Text3DComponent.h"
 
 
@@ -32,6 +35,11 @@ AAquaman::AAquaman()
 
 	healthText = CreateDefaultSubobject<UText3DComponent>(TEXT("HealthText"));
 	healthText->SetupAttachment(RootComponent);
+
+	if (GetMesh())
+	{
+		GetMesh()->SetAnimInstanceClass(AnimBP);
+	}
 
 }
 
@@ -57,6 +65,8 @@ void AAquaman::BeginPlay()
 void AAquaman::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	currentSpeed = GetVelocity().Size();
 
 }
 
@@ -116,7 +126,8 @@ void AAquaman::look(const FInputActionValue& Value)
 
 void AAquaman::buildTurret(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("Build Turret Action Triggered"));
+	isShooting = 1.0f;
+
 	if (currentTurrets >= MaxTurrets)
 	{
 		return;
@@ -143,6 +154,10 @@ void AAquaman::buildTurret(const FInputActionValue& Value)
 	 ATurret* turret = GetWorld()->SpawnActor<ATurret>(turretClass, spawnLocation, spawnRotation);
 	 if (turret)
 		 turret->OnDeath.AddDynamic(this, &AAquaman::turretDie);
+	 if (turretBuildSound)
+	 {
+		 UGameplayStatics::PlaySoundAtLocation(this, turretBuildSound, spawnLocation);
+	 }
 }
 
 void AAquaman::turretDie()

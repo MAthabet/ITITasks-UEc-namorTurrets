@@ -36,13 +36,11 @@ void ATurret::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* O
 {
 	if (OtherActor)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("overlap begin"));
 		if (OtherActor->ActorHasTag(TEXT("Enemy")))
 		{
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Turret detected an enemy!"));
 			EnemiesInRange.Add(OtherActor);
 			if(EnemiesInRange.Num() == 1)
-				attackEnemy(OtherActor);
+				attackEnemy();
 		}
 		else
 		{
@@ -60,7 +58,7 @@ void ATurret::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 		{
 			EnemiesInRange.Remove(OtherActor);
 			if (EnemiesInRange.Num() > 0)
-				attackEnemy(EnemiesInRange[0]);
+				attackEnemy();
 		}
 		else
 		{
@@ -82,7 +80,6 @@ void ATurret::OnHealthUpdated(float newHP)
 
 void ATurret::Die()
 {
-	UE_LOG(LogTemp, Warning, TEXT("Turret is dead"));
 	OnDeath.Broadcast();
 	this->Destroy();	
 }
@@ -118,23 +115,23 @@ void ATurret::Tick(float DeltaTime)
 		// Draw a debug sphere in the world at the DetectionSphere's location
 		DrawDebugSphere(GetWorld(), SphereLocation, SphereRadius, 12, SphereColor, false, -1, 0, 2);
 	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("DetectionSphere is null"));
-	}
 }
 
-void ATurret::attackEnemy(AActor* enemy)
+void ATurret::attackEnemy()
 {
+	AActor* enemy;
+	if (EnemiesInRange.Num() > 0)
+		enemy = EnemiesInRange[0];
+	else return;
 	if (enemy)
 	{
-		if (lastShotTime + shootCooldown < GetWorld()->GetTimeSeconds())
+		float time = GetWorld()->GetTimeSeconds();
+		if ((lastShotTime + shootCooldown) < time)
 		{
-			lastShotTime = GetWorld()->GetTimeSeconds();
 			FVector start = this->GetActorLocation();
 			FVector end = enemy->GetActorLocation();
 			FHitResult hitResult;
-			if (GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECC_Visibility))
+			if (GetWorld()->LineTraceSingleByChannel(hitResult, start, end, ECC_Pawn))
 			{
 				if (hitResult.GetActor() == enemy)
 				{
@@ -145,10 +142,19 @@ void ATurret::attackEnemy(AActor* enemy)
 					}
 				}
 			}
+			else
+			{
+				//draw debug line
+				DrawDebugLine(GetWorld(), start, end, FColor::Red, false, 0.50f, 0, 5.0f);
+			}
+			lastShotTime = GetWorld()->GetTimeSeconds();
 		}
 	}
 	else
 		EnemiesInRange.Remove(enemy);
 	if (EnemiesInRange.Num() > 0)
-		attackEnemy(EnemiesInRange[0]);
+	{
+		FTimerHandle shootTimer;
+		GetWorld()->GetTimerManager().SetTimer(shootTimer, this, &ATurret::attackEnemy, shootCooldown, false);
+	}
 }
