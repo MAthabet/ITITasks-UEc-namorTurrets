@@ -1,0 +1,85 @@
+// Fill out your copyright notice in the Description page of Project Settings.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Character.h"
+#include "Aquaman.generated.h"
+
+class UHealthComponent;
+class UWidgetComponent;
+class UInputMappingContext;
+class UInputAction;
+class UInputComponent;
+class USpringArmComponent;
+class UCameraComponent;
+class ATurret;
+
+UCLASS()
+class DAY2_ADVANCED_API AAquaman : public ACharacter
+{
+	GENERATED_BODY()
+
+public:
+	// Sets default values for this character's properties
+	AAquaman();
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
+	int MaxTurrets = 3;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
+	float maxShootDist = 100.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
+	TSubclassOf<ATurret> turretClass;
+	UPROPERTY()
+	float currentTurrets = 0;
+
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UHealthComponent* health;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UWidgetComponent* HealthWidget;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	USpringArmComponent* springArm;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UCameraComponent* camera;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputMappingContext* IMC;
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* MoveAction;
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* LookAction;
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	UInputAction* ShootAction;
+
+
+	
+	
+
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+
+private:
+	UFUNCTION()
+	void OnHealthUpdated(float newHP);
+	UFUNCTION()
+	void move(const FInputActionValue& Value);
+	UFUNCTION()
+	void look(const FInputActionValue& Value);
+	UFUNCTION()
+	void buildTurret(const FInputActionValue& Value);
+	UFUNCTION()
+	void turretDie();
+
+	UPROPERTY()
+	APlayerController* PlayerController;
+
+public:	
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+};

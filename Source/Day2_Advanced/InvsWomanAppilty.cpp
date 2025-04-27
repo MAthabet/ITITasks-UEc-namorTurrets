@@ -35,11 +35,16 @@ void AInvsWomanAppilty::Tick(float DeltaTime)
 
 }
 
-void AInvsWomanAppilty::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AInvsWomanAppilty::OnOverlapBegin(UPrimitiveComponent* OverlappedComp,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex,
+	bool bFromSweep,
+	const FHitResult& SweepResult)
 {
 	if (OtherActor)
 	{
-		UHealthComponent* HealthComponent = Cast<UHealthComponent>(OtherActor->GetComponentByClass(UHealthComponent::StaticClass()));
+		UHealthComponent* HealthComponent = OtherActor->GetComponentByClass<UHealthComponent>();
 		if (HealthComponent)
 		{
 			ActorsInRange.Add(HealthComponent);
@@ -47,7 +52,10 @@ void AInvsWomanAppilty::OnOverlapBegin(UPrimitiveComponent* OverlappedComp, AAct
 	}
 }
 
-void AInvsWomanAppilty::OnOverlapEnd(UPrimitiveComponent* OverlappedComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+void AInvsWomanAppilty::OnOverlapEnd(UPrimitiveComponent* OverlappedComp,
+	AActor* OtherActor,
+	UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex)
 {
 	UE_LOG(LogTemp, Warning, TEXT("End Overlap with %s"), *OtherActor->GetName());
 	if (OtherActor)

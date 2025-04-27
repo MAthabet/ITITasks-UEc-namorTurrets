@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "HealthComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnHealthChanged, float, NewHealth);
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
 class DAY2_ADVANCED_API UHealthComponent : public UActorComponent
@@ -25,10 +26,15 @@ public:
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
 	float MaxHealth = 100.f;
+	UPROPERTY(BlueprintAssignable, Category = "Health")
+	FOnHealthChanged OnHealthChanged;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Health")
-	float Health = 100.f;
-		
 	UFUNCTION(BlueprintCallable, Category = "Health")
 	void changeHealth(float Amount);
+	UFUNCTION(BlueprintCallable, Category = "Health")
+	float getHealth() const { return Health; }
+
+private:
+	float Health = 100.f;
+		
 };

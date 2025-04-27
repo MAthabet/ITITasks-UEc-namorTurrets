@@ -20,6 +20,7 @@ void UHealthComponent::BeginPlay()
 	Super::BeginPlay();
 
 	Health = MaxHealth;
+	OnHealthChanged.Broadcast(Health);
 	// ...
 	
 }
@@ -44,6 +45,7 @@ void UHealthComponent::changeHealth(float Amount)
 	{
 		Health = 0;
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, Amount > 0 ? FColor::Green:FColor::Red, FString::Printf(TEXT("Health: %f"), Health));
+	OnHealthChanged.Broadcast(Health);
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, Amount > 0 ? FColor::Green:FColor::Red, FString::Printf(TEXT("Health: %f"), Health));
 }
 
