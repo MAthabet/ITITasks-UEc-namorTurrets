@@ -6,6 +6,7 @@
 #include "Components/SphereComponent.h"
 #include "C:\Program Files\Epic Games\UE_5.4\Engine\Plugins\Experimental\Text3D\Source\Text3D\Public\Text3DComponent.h"
 
+#include "DrawDebugHelpers.h"
 
 // Sets default values
 ATurret::ATurret()
@@ -35,8 +36,10 @@ void ATurret::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* O
 {
 	if (OtherActor)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("overlap begin"));
 		if (OtherActor->ActorHasTag(TEXT("Enemy")))
 		{
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("Turret detected an enemy!"));
 			EnemiesInRange.Add(OtherActor);
 			if(EnemiesInRange.Num() == 1)
 				attackEnemy(OtherActor);
@@ -106,7 +109,19 @@ void ATurret::BeginPlay()
 void ATurret::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	if (DetectionSphere)
+	{
+		FVector SphereLocation = DetectionSphere->GetComponentLocation();
+		float SphereRadius = DetectionSphere->GetScaledSphereRadius();
+		FColor SphereColor = FColor::Green; // You can change the color
 
+		// Draw a debug sphere in the world at the DetectionSphere's location
+		DrawDebugSphere(GetWorld(), SphereLocation, SphereRadius, 12, SphereColor, false, -1, 0, 2);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DetectionSphere is null"));
+	}
 }
 
 void ATurret::attackEnemy(AActor* enemy)

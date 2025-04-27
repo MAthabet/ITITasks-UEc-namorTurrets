@@ -8,6 +8,7 @@
 
 class UHealthComponent;
 class UText3DComponent;
+class UCapsuleComponent;
 
 UCLASS()
 class DAY2_ADVANCED_API AEnemy : public APawn
@@ -24,6 +25,11 @@ public:
 	UText3DComponent* healthText;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	USkeletalMeshComponent* enemyMesh;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
+	UCapsuleComponent* enemyCollision;
+
+
+	
 	UPROPERTY()
 	bool isDead = false;
 

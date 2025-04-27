@@ -27,7 +27,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
 	int MaxTurrets = 3;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
-	float maxShootDist = 100.0f;
+	float maxShootDist = 1000.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
 	TSubclassOf<ATurret> turretClass;
 	UPROPERTY()

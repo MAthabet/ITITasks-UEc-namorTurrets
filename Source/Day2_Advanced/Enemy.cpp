@@ -3,7 +3,7 @@
 
 #include "Enemy.h"
 #include "Components/HealthComponent.h"
-#include "Components/WidgetComponent.h"
+#include "Components/CapsuleComponent.h"
 #include "C:\Program Files\Epic Games\UE_5.4\Engine\Plugins\Experimental\Text3D\Source\Text3D\Public\Text3DComponent.h"
 
 
@@ -17,13 +17,19 @@ AEnemy::AEnemy()
 
 	health->OnHealthChanged.AddDynamic(this, &AEnemy::OnHealthUpdated);
 
+	enemyCollision = CreateDefaultSubobject<UCapsuleComponent>(TEXT("EnemyCollision"));
+	enemyCollision->SetupAttachment(RootComponent);
+	enemyCollision->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+
 
 	enemyMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("EnemyMesh"));
 	enemyMesh->SetupAttachment(RootComponent);
 	enemyMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
+
 	healthText = CreateDefaultSubobject<UText3DComponent>(TEXT("HealthText"));
 	healthText->SetupAttachment(enemyMesh);
+
 
 	Tags.Add(FName("Enemy"));
 
