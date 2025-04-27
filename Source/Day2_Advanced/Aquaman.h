@@ -7,13 +7,13 @@
 #include "Aquaman.generated.h"
 
 class UHealthComponent;
-class UWidgetComponent;
 class UInputMappingContext;
 class UInputAction;
 class UInputComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class ATurret;
+class UText3DComponent;
 
 UCLASS()
 class DAY2_ADVANCED_API AAquaman : public ACharacter
@@ -37,11 +37,12 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UHealthComponent* health;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-	UWidgetComponent* HealthWidget;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	USpringArmComponent* springArm;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UCameraComponent* camera;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UText3DComponent* healthText;
+
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputMappingContext* IMC;

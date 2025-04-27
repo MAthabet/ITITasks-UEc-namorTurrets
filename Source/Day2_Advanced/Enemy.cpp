@@ -4,6 +4,8 @@
 #include "Enemy.h"
 #include "Components/HealthComponent.h"
 #include "Components/WidgetComponent.h"
+#include "C:\Program Files\Epic Games\UE_5.4\Engine\Plugins\Experimental\Text3D\Source\Text3D\Public\Text3DComponent.h"
+
 
 // Sets default values
 AEnemy::AEnemy()
@@ -20,10 +22,8 @@ AEnemy::AEnemy()
 	enemyMesh->SetupAttachment(RootComponent);
 	enemyMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-	HealthWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthWidget"));
-	HealthWidget->SetupAttachment(enemyMesh);
-	HealthWidget->SetWidgetSpace(EWidgetSpace::Screen);
-	HealthWidget->SetDrawSize(FVector2D(100, 50));
+	healthText = CreateDefaultSubobject<UText3DComponent>(TEXT("HealthText"));
+	healthText->SetupAttachment(enemyMesh);
 
 	Tags.Add(FName("Enemy"));
 
@@ -61,18 +61,9 @@ void AEnemy::OnHealthUpdated(float newHP)
 		enemyMesh->SetCollisionProfileName(TEXT("Ragdoll"));
 		SetLifeSpan(3.0f);
 	}
-	else
+	else if (healthText)
 	{
-		// Update the health widget
-		if (HealthWidget)
-		{
-			UUserWidget* widget = Cast<UUserWidget>(HealthWidget->GetUserWidgetObject());
-			if (widget)
-			{
-				// Assuming you have a function in your widget to update the health bar
-				// widget->UpdateHealthBar(newHP);
-			}
-		}
-
+		FString healthString = FString::Printf(TEXT("Health: %d"), FMath::RoundToInt(newHP));
+		healthText->SetText(FText::FromString(healthString));
 	}
 }

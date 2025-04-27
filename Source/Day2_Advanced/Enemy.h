@@ -7,7 +7,7 @@
 #include "Enemy.generated.h"
 
 class UHealthComponent;
-class UWidgetComponent;
+class UText3DComponent;
 
 UCLASS()
 class DAY2_ADVANCED_API AEnemy : public APawn
@@ -21,7 +21,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UHealthComponent* health;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-	UWidgetComponent* HealthWidget;
+	UText3DComponent* healthText;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	USkeletalMeshComponent* enemyMesh;
 	UPROPERTY()

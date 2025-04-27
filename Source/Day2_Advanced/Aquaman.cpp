@@ -11,6 +11,8 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "InputAction.h"
+#include "C:\Program Files\Epic Games\UE_5.4\Engine\Plugins\Experimental\Text3D\Source\Text3D\Public\Text3DComponent.h"
+
 
 // Sets default values
 AAquaman::AAquaman()
@@ -22,16 +24,14 @@ AAquaman::AAquaman()
 
 	health->OnHealthChanged.AddDynamic(this, &AAquaman::OnHealthUpdated);
 
-	HealthWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthWidget"));
-	HealthWidget->SetupAttachment(RootComponent);
-	HealthWidget->SetWidgetSpace(EWidgetSpace::Screen);
-	HealthWidget->SetDrawSize(FVector2D(100, 50));
-
 	springArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	springArm->SetupAttachment(RootComponent);
 	
 	camera = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
 	camera->SetupAttachment(springArm);
+
+	healthText = CreateDefaultSubobject<UText3DComponent>(TEXT("HealthText"));
+	healthText->SetupAttachment(RootComponent);
 
 }
 
@@ -78,6 +78,16 @@ void AAquaman::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AAquaman::OnHealthUpdated(float newHP)
 {
+	if (newHP <= 0)
+	{
+		// Handle player death
+		UE_LOG(LogTemp, Warning, TEXT("Player is dead"));
+	}
+	else if (healthText)
+	{
+		FString healthString = FString::Printf(TEXT("Health: %d"), FMath::RoundToInt(newHP));
+		healthText->SetText(FText::FromString(healthString));
+	}
 }
 
 void AAquaman::move(const FInputActionValue& Value)

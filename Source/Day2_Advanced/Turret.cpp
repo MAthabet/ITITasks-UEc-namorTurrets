@@ -4,7 +4,6 @@
 #include "Turret.h"
 #include "Components/HealthComponent.h"
 #include "Components/SphereComponent.h"
-#include "Components/WidgetComponent.h"
 #include "C:\Program Files\Epic Games\UE_5.4\Engine\Plugins\Experimental\Text3D\Source\Text3D\Public\Text3DComponent.h"
 
 
@@ -22,10 +21,13 @@ ATurret::ATurret()
 
 	healthText = CreateDefaultSubobject<UText3DComponent>(TEXT("HealthText"));
 	healthText->SetupAttachment(turretMesh);
-	FVector MeshExtent = turretMesh->Bounds.BoxExtent;
-	float MeshHeight = MeshExtent.Z * 2.0f;
-	FVector Offset = FVector(0.0f, 0.0f, MeshHeight + 20.0f);
-	healthText->SetRelativeLocation(Offset);
+
+	DetectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("DetectionSphere"));
+	DetectionSphere->SetupAttachment(turretMesh);
+	DetectionSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	DetectionSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	DetectionSphere->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
+
 }
 
 
@@ -68,8 +70,11 @@ void ATurret::OnHealthUpdated(float newHP)
 {
 	if (newHP <= 0)
 		Die();
-	else
-		healthText->SetText(FText::FromString(FString::Printf(TEXT("Health: %f"), newHP)));
+	else if (healthText)
+	{
+		FString healthString = FString::Printf(TEXT("Health: %d"), FMath::RoundToInt(newHP));
+		healthText->SetText(FText::FromString(healthString));
+	}
 }
 
 void ATurret::Die()
