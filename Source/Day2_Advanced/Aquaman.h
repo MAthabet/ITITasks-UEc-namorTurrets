@@ -14,6 +14,7 @@ class UInputComponent;
 class USpringArmComponent;
 class UCameraComponent;
 class ATurret;
+class UText3DComponent;
 
 UCLASS()
 class DAY2_ADVANCED_API AAquaman : public ACharacter
@@ -27,7 +28,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
 	int MaxTurrets = 3;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
-	float maxShootDist = 100.0f;
+	float maxShootDist = 1000.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
 	TSubclassOf<ATurret> turretClass;
 	UPROPERTY()
@@ -37,11 +38,11 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UHealthComponent* health;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-	UWidgetComponent* HealthWidget;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	USpringArmComponent* springArm;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
 	UCameraComponent* camera;
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+	UText3DComponent* healthText;
 
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	UInputMappingContext* IMC;
@@ -71,6 +72,9 @@ private:
 	void buildTurret(const FInputActionValue& Value);
 	UFUNCTION()
 	void turretDie();
+	UFUNCTION()
+	void Die();
+
 
 	UPROPERTY()
 	APlayerController* PlayerController;

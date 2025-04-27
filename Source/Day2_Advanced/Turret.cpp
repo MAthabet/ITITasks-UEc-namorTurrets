@@ -7,6 +7,8 @@
 #include "Components/WidgetComponent.h"
 #include "C:\Program Files\Epic Games\UE_5.4\Engine\Plugins\Experimental\Text3D\Source\Text3D\Public\Text3DComponent.h"
 
+#include "DrawDebugHelpers.h"
+
 
 // Sets default values
 ATurret::ATurret()
@@ -22,10 +24,13 @@ ATurret::ATurret()
 
 	healthText = CreateDefaultSubobject<UText3DComponent>(TEXT("HealthText"));
 	healthText->SetupAttachment(turretMesh);
-	FVector MeshExtent = turretMesh->Bounds.BoxExtent;
-	float MeshHeight = MeshExtent.Z * 2.0f;
-	FVector Offset = FVector(0.0f, 0.0f, MeshHeight + 20.0f);
-	healthText->SetRelativeLocation(Offset);
+
+	DetectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("DetectionSphere"));
+	DetectionSphere->SetupAttachment(RootComponent);
+	DetectionSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+	DetectionSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+	DetectionSphere->SetCollisionResponseToChannel(ECC_Pawn, ECollisionResponse::ECR_Overlap);
+
 }
 
 
@@ -33,8 +38,12 @@ void ATurret::OnOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* O
 {
 	if (OtherActor)
 	{
+		//print on screen
+		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("Overlap started"));
 		if (OtherActor->ActorHasTag(TEXT("Enemy")))
 		{
+			//print on screen
+			GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Red, TEXT("enemy"));
 			EnemiesInRange.Add(OtherActor);
 			if(EnemiesInRange.Num() == 1)
 				attackEnemy(OtherActor);
@@ -51,6 +60,7 @@ void ATurret::OnOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* Oth
 {
 	if (OtherActor)
 	{
+		
 		if (OtherActor->ActorHasTag(TEXT("Enemy")))
 		{
 			EnemiesInRange.Remove(OtherActor);
@@ -69,7 +79,7 @@ void ATurret::OnHealthUpdated(float newHP)
 	if (newHP <= 0)
 		Die();
 	else
-		healthText->SetText(FText::FromString(FString::Printf(TEXT("Health: %f"), newHP)));
+		healthText->SetText(FText::FromString(FString::Printf(TEXT("Health: %d"), FMath::RoundToInt(newHP))));
 }
 
 void ATurret::Die()
@@ -101,6 +111,20 @@ void ATurret::BeginPlay()
 void ATurret::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (DetectionSphere)
+	{
+		FVector SphereLocation = DetectionSphere->GetComponentLocation();
+		float SphereRadius = DetectionSphere->GetScaledSphereRadius();
+		FColor SphereColor = FColor::Green; // You can change the color
+
+		// Draw a debug sphere in the world at the DetectionSphere's location
+		DrawDebugSphere(GetWorld(), SphereLocation, SphereRadius, 12, SphereColor, false, -1, 0, 2);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("DetectionSphere is null"));
+	}
 
 }
 

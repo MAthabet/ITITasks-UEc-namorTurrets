@@ -4,6 +4,8 @@
 #include "Enemy.h"
 #include "Components/HealthComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "C:\Program Files\Epic Games\UE_5.4\Engine\Plugins\Experimental\Text3D\Source\Text3D\Public\Text3DComponent.h"
 
 // Sets default values
 AEnemy::AEnemy()
@@ -15,15 +17,15 @@ AEnemy::AEnemy()
 
 	health->OnHealthChanged.AddDynamic(this, &AEnemy::OnHealthUpdated);
 
+	CollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CollisionComponent"));
+	CollisionComponent->SetupAttachment(RootComponent);
 
 	enemyMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("EnemyMesh"));
-	enemyMesh->SetupAttachment(RootComponent);
+	enemyMesh->SetupAttachment(CollisionComponent);
 	enemyMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
 
-	HealthWidget = CreateDefaultSubobject<UWidgetComponent>(TEXT("HealthWidget"));
-	HealthWidget->SetupAttachment(enemyMesh);
-	HealthWidget->SetWidgetSpace(EWidgetSpace::Screen);
-	HealthWidget->SetDrawSize(FVector2D(100, 50));
+	healthText = CreateDefaultSubobject<UText3DComponent>(TEXT("HealthText"));
+	healthText->SetupAttachment(enemyMesh);
 
 	Tags.Add(FName("Enemy"));
 
@@ -56,23 +58,12 @@ void AEnemy::OnHealthUpdated(float newHP)
 	if (newHP <= 0)
 	{
 		isDead = true;
-
 		enemyMesh->SetSimulatePhysics(true);
 		enemyMesh->SetCollisionProfileName(TEXT("Ragdoll"));
 		SetLifeSpan(3.0f);
 	}
 	else
 	{
-		// Update the health widget
-		if (HealthWidget)
-		{
-			UUserWidget* widget = Cast<UUserWidget>(HealthWidget->GetUserWidgetObject());
-			if (widget)
-			{
-				// Assuming you have a function in your widget to update the health bar
-				// widget->UpdateHealthBar(newHP);
-			}
-		}
-
+		healthText->SetText(FText::FromString(FString::Printf(TEXT("Health: %d"), FMath::RoundToInt(newHP))));
 	}
 }

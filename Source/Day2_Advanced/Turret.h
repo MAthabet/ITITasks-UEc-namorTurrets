@@ -27,7 +27,7 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
 	float shootCooldown = 0.5f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
-	float range = 10.0f;
+	float range = 1000.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Turret")
 	float turretLifeTime = 10.0f;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
