@@ -33,10 +33,10 @@ public:
 	UPROPERTY(EditAnywhere, Category = "Turret")
 	USoundBase* turretBuildSound;
 	
-	UPROPERTY(BlueprintReadWrite, Category = "player")
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = "player")
 	float currentSpeed = 0.0f;
-	UPROPERTY(BlueprintReadWrite, Category = "player")
-	float isShooting = 0.0f;
+	UPROPERTY(VisibleAnywhere,BlueprintReadWrite, Category = "player")
+	bool isShooting = false;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Animations")
 	TSubclassOf<UAnimInstance> AnimBP;
