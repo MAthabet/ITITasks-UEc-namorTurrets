@@ -18,11 +18,15 @@ AEnemy::AEnemy()
 	health->OnHealthChanged.AddDynamic(this, &AEnemy::OnHealthUpdated);
 
 	CollisionComponent = CreateDefaultSubobject<UCapsuleComponent>(TEXT("CollisionComponent"));
+	if(CollisionComponent)
 	CollisionComponent->SetupAttachment(RootComponent);
 
 	enemyMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("EnemyMesh"));
-	enemyMesh->SetupAttachment(CollisionComponent);
-	enemyMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	if (enemyMesh)
+	{
+		enemyMesh->SetupAttachment(CollisionComponent);
+		enemyMesh->SetCollisionEnabled(ECollisionEnabled::QueryAndPhysics);
+	}
 
 	healthText = CreateDefaultSubobject<UText3DComponent>(TEXT("HealthText"));
 	healthText->SetupAttachment(enemyMesh);

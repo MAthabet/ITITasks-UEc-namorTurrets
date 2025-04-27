@@ -19,17 +19,21 @@ ATurret::ATurret()
 	turretMesh->SetupAttachment(RootComponent);
 
 	health = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
-
+	if(health)
 	health->OnHealthChanged.AddDynamic(this, &ATurret::OnHealthUpdated);
 
 	healthText = CreateDefaultSubobject<UText3DComponent>(TEXT("HealthText"));
+	if (healthText)
 	healthText->SetupAttachment(turretMesh);
 
 	DetectionSphere = CreateDefaultSubobject<USphereComponent>(TEXT("DetectionSphere"));
-	DetectionSphere->SetupAttachment(RootComponent);
-	DetectionSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
-	DetectionSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
-	DetectionSphere->SetCollisionResponseToChannel(ECC_Pawn, ECollisionResponse::ECR_Overlap);
+	if (DetectionSphere)
+	{
+		DetectionSphere->SetupAttachment(RootComponent);
+		DetectionSphere->SetCollisionEnabled(ECollisionEnabled::QueryOnly);
+		DetectionSphere->SetCollisionResponseToAllChannels(ECollisionResponse::ECR_Ignore);
+		DetectionSphere->SetCollisionResponseToChannel(ECC_Pawn, ECollisionResponse::ECR_Overlap);
+	}
 
 }
 

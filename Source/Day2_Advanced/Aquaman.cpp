@@ -20,16 +20,19 @@ AAquaman::AAquaman()
 	PrimaryActorTick.bCanEverTick = true;
 
 	health = CreateDefaultSubobject<UHealthComponent>(TEXT("HealthComponent"));
-
+	if(health)
 	health->OnHealthChanged.AddDynamic(this, &AAquaman::OnHealthUpdated);
 
 	healthText = CreateDefaultSubobject<UText3DComponent>(TEXT("HealthText"));
+	if(healthText)
 	healthText->SetupAttachment(RootComponent);
 
 	springArm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	if(springArm)
 	springArm->SetupAttachment(RootComponent);
 	
 	camera = CreateDefaultSubobject<UCameraComponent>(TEXT("CameraComp"));
+	if(camera)
 	camera->SetupAttachment(springArm);
 
 }
