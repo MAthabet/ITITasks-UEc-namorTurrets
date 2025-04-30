@@ -80,6 +80,8 @@ private:
 	void buildTurret(const FInputActionValue& Value);
 	UFUNCTION()
 	void turretDie();
+	UFUNCTION()
+	void changeShootingState();
 
 
 	UPROPERTY()

@@ -126,7 +126,10 @@ void AAquaman::look(const FInputActionValue& Value)
 
 void AAquaman::buildTurret(const FInputActionValue& Value)
 {
-	isShooting = 1.0f;
+	isShooting = true;
+	FTimerHandle timerHandle;
+	//looks stupid
+	GetWorld()->GetTimerManager().SetTimer(timerHandle, this, &AAquaman::changeShootingState, 1.5f, false);
 
 	if (currentTurrets >= MaxTurrets)
 	{
@@ -163,6 +166,11 @@ void AAquaman::buildTurret(const FInputActionValue& Value)
 void AAquaman::turretDie()
 {
 	currentTurrets--;
+}
+
+void AAquaman::changeShootingState()
+{
+	isShooting = false;
 }
 
 
